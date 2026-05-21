@@ -9,14 +9,28 @@ const logFields = [
 ];
 
 let entries = [];
+let onEntriesChange = () => {};
 
-export function initializeLogbook() {
+export function initializeLogbook(options = {}) {
+  onEntriesChange = options.onEntriesChange || onEntriesChange;
   entries = loadEntries();
   setDefaultDate();
   bindLogSliders();
   bindLogForm();
   bindClearButton();
   renderLogEntries();
+}
+
+export function getLogEntries() {
+  entries = loadEntries();
+  return sortOldestToNewest(entries);
+}
+
+export function saveLogEntries(nextEntries) {
+  entries = Array.isArray(nextEntries) ? nextEntries : [];
+  saveEntries();
+  renderLogEntries();
+  onEntriesChange(getLogEntries());
 }
 
 function loadEntries() {
@@ -30,6 +44,14 @@ function loadEntries() {
 
 function saveEntries() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+}
+
+function sortNewestToOldest(logEntries) {
+  return [...logEntries].sort((a, b) => b.date.localeCompare(a.date));
+}
+
+function sortOldestToNewest(logEntries) {
+  return [...logEntries].sort((a, b) => a.date.localeCompare(b.date));
 }
 
 function setDefaultDate() {
@@ -65,18 +87,17 @@ function bindLogForm() {
       note: document.querySelector("#logNote").value.trim()
     };
 
-    entries = [entry, ...entries].sort((a, b) => b.date.localeCompare(a.date));
+    entries = sortNewestToOldest([entry, ...entries]);
     saveEntries();
     document.querySelector("#logNote").value = "";
     renderLogEntries();
+    onEntriesChange(getLogEntries());
   });
 }
 
 function bindClearButton() {
   document.querySelector("#clearLogsButton").addEventListener("click", () => {
-    entries = [];
-    saveEntries();
-    renderLogEntries();
+    saveLogEntries([]);
   });
 }
 
@@ -107,6 +128,7 @@ function renderLogEntries() {
       entries = entries.filter((entry) => entry.id !== button.dataset.deleteLog);
       saveEntries();
       renderLogEntries();
+      onEntriesChange(getLogEntries());
     });
   });
 }

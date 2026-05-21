@@ -47,3 +47,47 @@ export function runEulerSimulation(config) {
 
   return points;
 }
+
+export function runEulerFromLogs(config, logEntries) {
+  const dt = 1;
+  let current = {
+    stress: Number(config.stress),
+    energy: Number(config.energy),
+    recovery: Number(config.recovery)
+  };
+
+  const points = [
+    {
+      day: 0,
+      ...current,
+      risk: calculateBurnoutRisk(current)
+    }
+  ];
+
+  logEntries.forEach((entry, index) => {
+    const inputs = {
+      academic: Number(entry.academic),
+      training: Number(entry.training),
+      work: Number(entry.work),
+      sleep: Number(entry.sleep),
+      support: Number(entry.support)
+    };
+    const rates = calculateRates(current, inputs);
+
+    current = {
+      stress: clamp(current.stress + dt * rates.stress),
+      energy: clamp(current.energy + dt * rates.energy),
+      recovery: clamp(current.recovery + dt * rates.recovery)
+    };
+
+    points.push({
+      day: index + 1,
+      date: entry.date,
+      ...current,
+      risk: calculateBurnoutRisk(current),
+      inputs
+    });
+  });
+
+  return points;
+}

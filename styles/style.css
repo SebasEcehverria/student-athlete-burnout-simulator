@@ -226,6 +226,7 @@ input[type="date"] {
 .secondary-button,
 .primary-button,
 .danger-button,
+.mode-button,
 .preset-button,
 .table-button {
   border: 1px solid var(--border);
@@ -243,7 +244,8 @@ input[type="date"] {
 
 .secondary-button,
 .primary-button,
-.danger-button {
+.danger-button,
+.mode-button {
   height: 40px;
   padding: 0 14px;
 }
@@ -264,6 +266,7 @@ input[type="date"] {
 .secondary-button:hover,
 .primary-button:hover,
 .danger-button:hover,
+.mode-button:hover,
 .preset-button:hover,
 .table-button:hover {
   background: var(--button-hover);
@@ -292,6 +295,42 @@ input[type="date"] {
   align-items: center;
   justify-content: space-between;
   gap: 18px;
+}
+
+.section-actions,
+.mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.mode-toggle {
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.mode-button {
+  border-color: transparent;
+  background: transparent;
+  color: var(--muted-text);
+}
+
+.mode-button.active {
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
+  background: color-mix(in srgb, var(--accent) 18%, var(--button));
+  color: var(--text);
+}
+
+.mode-message {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 10%, var(--panel));
+  color: var(--muted-text);
 }
 
 .section-description,
@@ -350,6 +389,12 @@ input[type="date"] {
   display: block;
   margin-top: 10px;
   font-size: 2rem;
+}
+
+.mode-card p {
+  margin: 8px 0 0;
+  color: var(--muted-text);
+  line-height: 1.45;
 }
 
 .two-column,

@@ -59,6 +59,11 @@
             </div>
 
             <div class="dashboard-grid">
+              <article class="panel metric-card mode-card">
+                <span>Modeling Mode</span>
+                <strong id="dashboardMode">Scenario Mode</strong>
+                <p id="dashboardModeDetail">Using one repeated scenario input set.</p>
+              </article>
               <article class="panel metric-card">
                 <span>Final Stress</span>
                 <strong id="dashFinalStress">0</strong>
@@ -96,7 +101,10 @@
                 <h2 id="dailyLogHeading">Daily Log</h2>
                 <p class="section-description">Save simple day-by-day entries in localStorage and compare them with the simulation inputs.</p>
               </div>
-              <button id="clearLogsButton" class="danger-button" type="button">Clear All Logs</button>
+              <div class="section-actions">
+                <button id="useLogsButton" class="primary-button" type="button">Use Logs in Model</button>
+                <button id="clearLogsButton" class="danger-button" type="button">Clear All Logs</button>
+              </div>
             </div>
 
             <div class="log-layout">
@@ -167,7 +175,13 @@
                 <h2 id="simulatorHeading">Simulator</h2>
                 <p class="section-description">Adjust inputs, choose a scenario, and watch the Euler approximation update instantly.</p>
               </div>
+              <div class="mode-toggle" aria-label="Modeling mode">
+                <button class="mode-button active" type="button" data-mode="scenario">Scenario Mode</button>
+                <button class="mode-button" type="button" data-mode="personal">Personal Log Mode</button>
+              </div>
             </div>
+
+            <p id="personalLogEmptyMessage" class="mode-message" hidden>Add daily logs first to model your personal trend.</p>
 
             <div class="simulator-layout">
               <aside class="panel controls-panel" aria-label="Simulation controls">
@@ -253,6 +267,17 @@
                 <p><strong>W</strong> = work responsibilities</p>
                 <p><strong>L</strong> = sleep</p>
                 <p><strong>P</strong> = social support</p>
+              </article>
+            </div>
+
+            <div class="two-column">
+              <article class="panel detail-card">
+                <h3>Scenario Mode</h3>
+                <p>Scenario Mode uses one set of inputs repeatedly to simulate what could happen over a chosen number of days. This is useful for testing a schedule pattern like finals week or heavy training.</p>
+              </article>
+              <article class="panel detail-card">
+                <h3>Personal Log Mode</h3>
+                <p>Personal Log Mode uses saved daily log entries as changing inputs, so each Euler step is based on the recorded academic load, training, work, sleep, and support for that day.</p>
               </article>
             </div>
 

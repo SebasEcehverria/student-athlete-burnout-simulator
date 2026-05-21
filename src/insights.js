@@ -24,21 +24,27 @@ export function calculateInsights(points) {
 }
 
 export function renderInsights(points) {
+  if (!points.length) {
+    document.querySelector("#insightCards").innerHTML = "";
+    document.querySelector("#insightInterpretation").textContent = "Add daily logs first to model your personal trend.";
+    return;
+  }
+
   const insights = calculateInsights(points);
   const cards = [
     {
       label: "Highest Stress Day",
-      value: `Day ${insights.highestStress.day}`,
+      value: formatPointLabel(insights.highestStress),
       detail: insights.highestStress.stress.toFixed(1)
     },
     {
       label: "Lowest Energy Day",
-      value: `Day ${insights.lowestEnergy.day}`,
+      value: formatPointLabel(insights.lowestEnergy),
       detail: insights.lowestEnergy.energy.toFixed(1)
     },
     {
       label: "Lowest Recovery Day",
-      value: `Day ${insights.lowestRecovery.day}`,
+      value: formatPointLabel(insights.lowestRecovery),
       detail: insights.lowestRecovery.recovery.toFixed(1)
     },
     {
@@ -120,4 +126,8 @@ function average(points, key) {
 function formatTrend(value) {
   const sign = value > 0 ? "+" : "";
   return `${sign}${value.toFixed(1)}`;
+}
+
+function formatPointLabel(point) {
+  return point.date ? `Day ${point.day} / ${point.date}` : `Day ${point.day}`;
 }
