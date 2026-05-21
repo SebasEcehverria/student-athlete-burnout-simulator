@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student-Athlete Burnout Simulator</title>
+    <link rel="stylesheet" href="/styles/style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">Differential Equations Final Project</p>
+          <h1>Student-Athlete Burnout Simulator</h1>
+          <p class="description">
+            Explore how academic load, training, sleep, work, and support affect
+            stress, energy, and recovery over time using Euler's Method.
+          </p>
+        </div>
+        <div class="header-actions">
+          <label class="profile-label" for="profileName">Athlete</label>
+          <input id="profileName" class="profile-input" type="text" value="Jordan Lee" />
+          <button id="themeToggle" class="theme-button" type="button" aria-label="Toggle theme" title="Toggle light or dark theme">
+            <span id="themeIcon">Dark</span>
+          </button>
+          <button id="resetButton" class="secondary-button" type="button">Reset</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="panel controls-panel" aria-label="Simulation controls">
+          <div class="panel-heading">
+            <h2>Controls</h2>
+            <p>Move a slider or choose a preset to rerun the simulation.</p>
+          </div>
+
+          <section class="preset-grid" aria-label="Scenario presets">
+            <button class="preset-button" type="button" data-preset="balanced">Balanced Week</button>
+            <button class="preset-button" type="button" data-preset="finals">Finals Week</button>
+            <button class="preset-button" type="button" data-preset="training">Heavy Training Week</button>
+            <button class="preset-button" type="button" data-preset="lowSleep">Low Sleep Week</button>
+            <button class="preset-button" type="button" data-preset="support">Strong Support Week</button>
+          </section>
+
+          <div id="sliderControls" class="slider-list"></div>
+        </aside>
+
+        <section class="main-area">
+          <section class="panel graph-panel" aria-label="Simulation graph">
+            <div class="panel-heading chart-heading">
+              <div>
+                <h2 id="chartTitle">Jordan Lee's 30-Day Simulation</h2>
+                <p>Values are clamped from 0 to 100 after each Euler step.</p>
+              </div>
+              <div class="legend" aria-label="Chart legend">
+                <span><i class="swatch stress"></i>Stress</span>
+                <span><i class="swatch energy"></i>Energy</span>
+                <span><i class="swatch recovery"></i>Recovery</span>
+                <span><i class="swatch risk"></i>Burnout Risk</span>
+              </div>
+            </div>
+            <div class="chart-frame">
+              <canvas id="simulationChart" width="960" height="520"></canvas>
+            </div>
+          </section>
+
+          <section class="panel equation-panel" aria-label="Equation explanation">
+            <h2>Model Equations</h2>
+            <div class="equation-grid">
+              <p><strong>dS/dt</strong> = aA + bT + cW - dR - eP</p>
+              <p><strong>dE/dt</strong> = fR + gL - hS - iT - jW</p>
+              <p><strong>dR/dt</strong> = kL + mP - nS - qT</p>
+            </div>
+            <p>
+              Stress rises from academics, training, and work, then falls when
+              recovery and support help buffer the load. Energy rises from
+              recovery and sleep, while stress, training, and work drain it.
+              Recovery grows with sleep and support, but high stress and hard
+              training make it harder to rebuild.
+            </p>
+            <p class="method-note">
+              Euler step: next value = current value + dt * rate of change.
+            </p>
+          </section>
+        </section>
+
+        <aside class="panel summary-panel" aria-label="Simulation summary">
+          <div class="panel-heading">
+            <h2>Summary</h2>
+            <p id="scenarioName">Balanced Week</p>
+          </div>
+
+          <div class="metric-list">
+            <div class="metric">
+              <span>Final Stress</span>
+              <strong id="finalStress">0</strong>
+            </div>
+            <div class="metric">
+              <span>Final Energy</span>
+              <strong id="finalEnergy">0</strong>
+            </div>
+            <div class="metric">
+              <span>Final Recovery</span>
+              <strong id="finalRecovery">0</strong>
+            </div>
+            <div class="metric">
+              <span>Final Burnout Risk</span>
+              <strong id="finalRisk">0</strong>
+            </div>
+          </div>
+
+          <div id="categoryBadge" class="category-badge low">Low</div>
+          <p id="interpretation" class="interpretation"></p>
+
+          <div class="mini-note">
+            This is an educational model for exploring a differential equations
+            system. It is not a medical or clinical assessment tool.
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

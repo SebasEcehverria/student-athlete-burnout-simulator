@@ -4,33 +4,31 @@ This project models student-athlete burnout using a coupled system of differenti
 
 The three main variables are:
 
-- S(t): stress level
-- E(t): energy level
-- R(t): recovery level
+- `S(t)`: stress level
+- `E(t)`: energy level
+- `R(t)`: recovery level
 
-where t represents time in days.
+where `t` represents time in days.
 
 ## Outside Inputs
 
 The model uses five adjustable outside factors:
 
-- A: academic workload
-- T: training intensity
-- W: work responsibilities
-- L: sleep quality/length
-- P: social support
+- `A`: academic workload
+- `T`: training intensity
+- `W`: work responsibilities
+- `L`: sleep
+- `P`: social support
 
 Each input is measured on a scale from 0 to 10.
 
 ## System of Differential Equations
 
-The model is:
-
+```text
 dS/dt = aA + bT + cW - dR - eP
-
 dE/dt = fR + gL - hS - iT - jW
-
 dR/dt = kL + mP - nS - qT
+```
 
 ## Explanation
 
@@ -44,18 +42,20 @@ This creates a feedback system where high stress can lower energy and recovery, 
 
 ## Euler's Method
 
-The system will be solved numerically using Euler's Method.
+The system is solved numerically using Euler's Method.
 
 For each variable:
 
-next value = current value + step size × rate of change
+```text
+next value = current value + step size * rate of change
+```
 
 So:
 
-S_next = S + Δt(dS/dt)
-
-E_next = E + Δt(dE/dt)
-
-R_next = R + Δt(dR/dt)
+```text
+S_next = S + dt(dS/dt)
+E_next = E + dt(dE/dt)
+R_next = R + dt(dR/dt)
+```
 
 This allows the simulator to approximate how stress, energy, and recovery change over time.
