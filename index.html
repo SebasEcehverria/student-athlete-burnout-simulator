@@ -8,116 +8,305 @@
   </head>
   <body>
     <div class="app-shell">
-      <header class="app-header">
-        <div>
-          <p class="eyebrow">Differential Equations Final Project</p>
-          <h1>Student-Athlete Burnout Simulator</h1>
-          <p class="description">
-            Explore how academic load, training, sleep, work, and support affect
-            stress, energy, and recovery over time using Euler's Method.
-          </p>
+      <aside class="sidebar" aria-label="Main navigation">
+        <div class="brand-block">
+          <p class="eyebrow">Differential Equations</p>
+          <h1>Burnout Dashboard</h1>
+          <p>Student-athlete schedule model</p>
         </div>
-        <div class="header-actions">
-          <label class="profile-label" for="profileName">Athlete</label>
-          <input id="profileName" class="profile-input" type="text" value="Jordan Lee" />
-          <button id="themeToggle" class="theme-button" type="button" aria-label="Toggle theme" title="Toggle light or dark theme">
-            <span id="themeIcon">Dark</span>
-          </button>
-          <button id="resetButton" class="secondary-button" type="button">Reset</button>
-        </div>
-      </header>
 
-      <main class="workspace">
-        <aside class="panel controls-panel" aria-label="Simulation controls">
-          <div class="panel-heading">
-            <h2>Controls</h2>
-            <p>Move a slider or choose a preset to rerun the simulation.</p>
+        <nav class="sidebar-nav">
+          <button class="nav-button active" type="button" data-section="dashboard">Dashboard</button>
+          <button class="nav-button" type="button" data-section="daily-log">Daily Log</button>
+          <button class="nav-button" type="button" data-section="simulator">Simulator</button>
+          <button class="nav-button" type="button" data-section="model">Model</button>
+          <button class="nav-button" type="button" data-section="insights">Insights</button>
+        </nav>
+
+        <div class="sidebar-card">
+          <span>Active Scenario</span>
+          <strong id="sidebarScenario">Balanced Week</strong>
+        </div>
+      </aside>
+
+      <div class="content-shell">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Student-Athlete Burnout Simulator</p>
+            <h2 id="sectionTitle">Dashboard</h2>
           </div>
+          <div class="header-actions">
+            <label class="profile-label" for="profileName">Athlete</label>
+            <input id="profileName" class="profile-input" type="text" value="Jordan Lee" />
+            <button id="themeToggle" class="theme-button" type="button" aria-label="Toggle theme" title="Toggle light or dark theme">
+              <span id="themeIcon">Dark</span>
+            </button>
+            <button id="resetButton" class="secondary-button" type="button">Reset</button>
+          </div>
+        </header>
 
-          <section class="preset-grid" aria-label="Scenario presets">
-            <button class="preset-button" type="button" data-preset="balanced">Balanced Week</button>
-            <button class="preset-button" type="button" data-preset="finals">Finals Week</button>
-            <button class="preset-button" type="button" data-preset="training">Heavy Training Week</button>
-            <button class="preset-button" type="button" data-preset="lowSleep">Low Sleep Week</button>
-            <button class="preset-button" type="button" data-preset="support">Strong Support Week</button>
-          </section>
-
-          <div id="sliderControls" class="slider-list"></div>
-        </aside>
-
-        <section class="main-area">
-          <section class="panel graph-panel" aria-label="Simulation graph">
-            <div class="panel-heading chart-heading">
+        <main class="section-stack">
+          <section id="dashboard" class="app-section active" aria-labelledby="dashboardHeading">
+            <div class="hero-panel">
               <div>
-                <h2 id="chartTitle">Jordan Lee's 30-Day Simulation</h2>
-                <p>Values are clamped from 0 to 100 after each Euler step.</p>
+                <p class="eyebrow">Home</p>
+                <h2 id="dashboardHeading">Welcome, <span id="dashboardName">Jordan Lee</span></h2>
+                <p id="dashboardMeaning" class="section-description">
+                  This dashboard summarizes the current simulation and turns the model output into a readable recommendation.
+                </p>
               </div>
-              <div class="legend" aria-label="Chart legend">
-                <span><i class="swatch stress"></i>Stress</span>
-                <span><i class="swatch energy"></i>Energy</span>
-                <span><i class="swatch recovery"></i>Recovery</span>
-                <span><i class="swatch risk"></i>Burnout Risk</span>
-              </div>
+              <div id="dashboardCategoryBadge" class="category-badge low">Low</div>
             </div>
-            <div class="chart-frame">
-              <canvas id="simulationChart" width="960" height="520"></canvas>
+
+            <div class="dashboard-grid">
+              <article class="panel metric-card">
+                <span>Final Stress</span>
+                <strong id="dashFinalStress">0</strong>
+              </article>
+              <article class="panel metric-card">
+                <span>Final Energy</span>
+                <strong id="dashFinalEnergy">0</strong>
+              </article>
+              <article class="panel metric-card">
+                <span>Final Recovery</span>
+                <strong id="dashFinalRecovery">0</strong>
+              </article>
+              <article class="panel metric-card">
+                <span>Final Burnout Risk</span>
+                <strong id="dashFinalRisk">0</strong>
+              </article>
+            </div>
+
+            <div class="two-column">
+              <article class="panel detail-card">
+                <h3>Current Scenario</h3>
+                <p id="dashboardScenario">Balanced Week</p>
+              </article>
+              <article class="panel detail-card recommendation-card">
+                <h3>Quick Recommendation</h3>
+                <p id="dashboardRecommendation">Current balance looks sustainable in the model.</p>
+              </article>
             </div>
           </section>
 
-          <section class="panel equation-panel" aria-label="Equation explanation">
-            <h2>Model Equations</h2>
-            <div class="equation-grid">
-              <p><strong>dS/dt</strong> = aA + bT + cW - dR - eP</p>
-              <p><strong>dE/dt</strong> = fR + gL - hS - iT - jW</p>
-              <p><strong>dR/dt</strong> = kL + mP - nS - qT</p>
+          <section id="daily-log" class="app-section" aria-labelledby="dailyLogHeading">
+            <div class="section-header">
+              <div>
+                <p class="eyebrow">Daily tracking</p>
+                <h2 id="dailyLogHeading">Daily Log</h2>
+                <p class="section-description">Save simple day-by-day entries in localStorage and compare them with the simulation inputs.</p>
+              </div>
+              <button id="clearLogsButton" class="danger-button" type="button">Clear All Logs</button>
             </div>
-            <p>
-              Stress rises from academics, training, and work, then falls when
-              recovery and support help buffer the load. Energy rises from
-              recovery and sleep, while stress, training, and work drain it.
-              Recovery grows with sleep and support, but high stress and hard
-              training make it harder to rebuild.
-            </p>
-            <p class="method-note">
-              Euler step: next value = current value + dt * rate of change.
-            </p>
+
+            <div class="log-layout">
+              <form id="dailyLogForm" class="panel log-form">
+                <label>
+                  <span>Date</span>
+                  <input id="logDate" type="date" required />
+                </label>
+
+                <div class="log-slider-list">
+                  <label class="slider-control" for="logAcademic">
+                    <span class="slider-row"><span>Academic workload</span><strong id="logAcademicValue">5</strong></span>
+                    <input id="logAcademic" type="range" min="0" max="10" step="1" value="5" data-log-key="academic" />
+                  </label>
+                  <label class="slider-control" for="logTraining">
+                    <span class="slider-row"><span>Training intensity</span><strong id="logTrainingValue">5</strong></span>
+                    <input id="logTraining" type="range" min="0" max="10" step="1" value="5" data-log-key="training" />
+                  </label>
+                  <label class="slider-control" for="logWork">
+                    <span class="slider-row"><span>Work responsibilities</span><strong id="logWorkValue">5</strong></span>
+                    <input id="logWork" type="range" min="0" max="10" step="1" value="5" data-log-key="work" />
+                  </label>
+                  <label class="slider-control" for="logSleep">
+                    <span class="slider-row"><span>Sleep</span><strong id="logSleepValue">5</strong></span>
+                    <input id="logSleep" type="range" min="0" max="10" step="1" value="5" data-log-key="sleep" />
+                  </label>
+                  <label class="slider-control" for="logSupport">
+                    <span class="slider-row"><span>Social support</span><strong id="logSupportValue">5</strong></span>
+                    <input id="logSupport" type="range" min="0" max="10" step="1" value="5" data-log-key="support" />
+                  </label>
+                </div>
+
+                <label>
+                  <span>Short note</span>
+                  <textarea id="logNote" rows="4" placeholder="Practice, exam, work shift, recovery day..."></textarea>
+                </label>
+
+                <button class="primary-button" type="submit">Save Day</button>
+              </form>
+
+              <div class="panel log-table-panel">
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Academic</th>
+                        <th>Training</th>
+                        <th>Work</th>
+                        <th>Sleep</th>
+                        <th>Support</th>
+                        <th>Note</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="logTableBody"></tbody>
+                  </table>
+                </div>
+                <p id="emptyLogMessage" class="empty-state">No days logged yet.</p>
+              </div>
+            </div>
           </section>
-        </section>
 
-        <aside class="panel summary-panel" aria-label="Simulation summary">
-          <div class="panel-heading">
-            <h2>Summary</h2>
-            <p id="scenarioName">Balanced Week</p>
-          </div>
+          <section id="simulator" class="app-section" aria-labelledby="simulatorHeading">
+            <div class="section-header">
+              <div>
+                <p class="eyebrow">Interactive model</p>
+                <h2 id="simulatorHeading">Simulator</h2>
+                <p class="section-description">Adjust inputs, choose a scenario, and watch the Euler approximation update instantly.</p>
+              </div>
+            </div>
 
-          <div class="metric-list">
-            <div class="metric">
-              <span>Final Stress</span>
-              <strong id="finalStress">0</strong>
-            </div>
-            <div class="metric">
-              <span>Final Energy</span>
-              <strong id="finalEnergy">0</strong>
-            </div>
-            <div class="metric">
-              <span>Final Recovery</span>
-              <strong id="finalRecovery">0</strong>
-            </div>
-            <div class="metric">
-              <span>Final Burnout Risk</span>
-              <strong id="finalRisk">0</strong>
-            </div>
-          </div>
+            <div class="simulator-layout">
+              <aside class="panel controls-panel" aria-label="Simulation controls">
+                <div class="panel-heading">
+                  <h3>Controls</h3>
+                  <p>Move a slider or choose a preset to rerun the simulation.</p>
+                </div>
 
-          <div id="categoryBadge" class="category-badge low">Low</div>
-          <p id="interpretation" class="interpretation"></p>
+                <section class="preset-grid" aria-label="Scenario presets">
+                  <button class="preset-button" type="button" data-preset="balanced">Balanced Week</button>
+                  <button class="preset-button" type="button" data-preset="finals">Finals Week</button>
+                  <button class="preset-button" type="button" data-preset="training">Heavy Training Week</button>
+                  <button class="preset-button" type="button" data-preset="lowSleep">Low Sleep Week</button>
+                  <button class="preset-button" type="button" data-preset="support">Strong Support Week</button>
+                </section>
 
-          <div class="mini-note">
-            This is an educational model for exploring a differential equations
-            system. It is not a medical or clinical assessment tool.
-          </div>
-        </aside>
-      </main>
+                <div id="sliderControls" class="slider-list"></div>
+              </aside>
+
+              <div class="main-simulator">
+                <section class="panel graph-panel" aria-label="Simulation graph">
+                  <div class="panel-heading chart-heading">
+                    <div>
+                      <h3 id="chartTitle">Jordan Lee's 30-Day Simulation</h3>
+                      <p>Values are clamped from 0 to 100 after each Euler step.</p>
+                    </div>
+                    <div class="legend" aria-label="Chart legend">
+                      <span><i class="swatch stress"></i>Stress</span>
+                      <span><i class="swatch energy"></i>Energy</span>
+                      <span><i class="swatch recovery"></i>Recovery</span>
+                      <span><i class="swatch risk"></i>Burnout Risk</span>
+                    </div>
+                  </div>
+                  <div class="chart-frame">
+                    <canvas id="simulationChart" width="960" height="520"></canvas>
+                  </div>
+                </section>
+
+                <section class="panel summary-panel" aria-label="Simulation summary">
+                  <div class="panel-heading">
+                    <h3>Summary</h3>
+                    <p id="scenarioName">Balanced Week</p>
+                  </div>
+
+                  <div class="metric-list">
+                    <div class="metric"><span>Final Stress</span><strong id="finalStress">0</strong></div>
+                    <div class="metric"><span>Final Energy</span><strong id="finalEnergy">0</strong></div>
+                    <div class="metric"><span>Final Recovery</span><strong id="finalRecovery">0</strong></div>
+                    <div class="metric"><span>Final Burnout Risk</span><strong id="finalRisk">0</strong></div>
+                  </div>
+
+                  <div id="categoryBadge" class="category-badge low">Low</div>
+                  <p id="interpretation" class="interpretation"></p>
+
+                  <div class="mini-note">
+                    This is an educational model for exploring a differential equations system. It is not a medical or clinical assessment tool.
+                  </div>
+                </section>
+              </div>
+            </div>
+          </section>
+
+          <section id="model" class="app-section" aria-labelledby="modelHeading">
+            <div class="section-header">
+              <div>
+                <p class="eyebrow">Equations</p>
+                <h2 id="modelHeading">Model</h2>
+                <p class="section-description">A readable guide to the variables, inputs, equations, Euler step, and burnout risk formula.</p>
+              </div>
+            </div>
+
+            <div class="model-grid">
+              <article class="panel model-card">
+                <h3>Variables</h3>
+                <p><strong>S(t)</strong> = stress</p>
+                <p><strong>E(t)</strong> = energy</p>
+                <p><strong>R(t)</strong> = recovery</p>
+              </article>
+              <article class="panel model-card">
+                <h3>Inputs</h3>
+                <p><strong>A</strong> = academic workload</p>
+                <p><strong>T</strong> = training intensity</p>
+                <p><strong>W</strong> = work responsibilities</p>
+                <p><strong>L</strong> = sleep</p>
+                <p><strong>P</strong> = social support</p>
+              </article>
+            </div>
+
+            <article class="panel equation-panel">
+              <h3>Equations</h3>
+              <div class="equation-grid">
+                <p><strong>dS/dt</strong> = aA + bT + cW - dR - eP</p>
+                <p><strong>dE/dt</strong> = fR + gL - hS - iT - jW</p>
+                <p><strong>dR/dt</strong> = kL + mP - nS - qT</p>
+              </div>
+              <div class="explanation-stack">
+                <p><strong>Stress equation.</strong> Academic workload, training, and work responsibilities increase stress. Recovery and social support reduce stress because they give the athlete resources to handle the load. The coefficients control how strongly each factor pushes the stress rate up or down.</p>
+                <p><strong>Energy equation.</strong> Recovery and sleep increase energy, which matches the idea that rest and rebuilding help an athlete feel more ready. Stress, training, and work drain energy because they demand time, attention, and physical effort.</p>
+                <p><strong>Recovery equation.</strong> Sleep and social support help recovery build back up. Stress and training intensity reduce recovery because both make it harder for the body and mind to return to baseline.</p>
+              </div>
+            </article>
+
+            <div class="two-column">
+              <article class="panel detail-card">
+                <h3>Euler's Method</h3>
+                <p>The app approximates the solution one day at a time. For each day, it calculates the current rate of change, then updates the variable with:</p>
+                <p class="formula">next value = current value + dt * rate of change</p>
+                <p>Here, <strong>dt = 1 day</strong>, so each step represents one day in the simulated schedule.</p>
+              </article>
+              <article class="panel detail-card">
+                <h3>Burnout Risk</h3>
+                <p class="formula">burnoutRisk = stress - 0.5 * energy - 0.5 * recovery</p>
+                <p>Higher stress raises the risk score, while energy and recovery lower it. A high score means stress is dominating the protective factors in this simplified model.</p>
+              </article>
+            </div>
+
+            <article class="panel limitation-card">
+              <h3>Limitation Note</h3>
+              <p>This is an educational model for a Differential Equations project, not a medical, psychological, or clinical assessment tool.</p>
+            </article>
+          </section>
+
+          <section id="insights" class="app-section" aria-labelledby="insightsHeading">
+            <div class="section-header">
+              <div>
+                <p class="eyebrow">Analysis</p>
+                <h2 id="insightsHeading">Insights</h2>
+                <p class="section-description">Key points from the current simulation, recalculated whenever the scenario changes.</p>
+              </div>
+            </div>
+
+            <div id="insightCards" class="insight-grid"></div>
+            <article class="panel insight-interpretation">
+              <h3>Plain-English Interpretation</h3>
+              <p id="insightInterpretation"></p>
+            </article>
+          </section>
+        </main>
+      </div>
     </div>
 
     <script type="module" src="/src/main.js"></script>
