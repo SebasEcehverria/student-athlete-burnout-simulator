@@ -19,6 +19,7 @@
           <button class="nav-button active" type="button" data-section="dashboard">Dashboard</button>
           <button class="nav-button" type="button" data-section="daily-log">Daily Log</button>
           <button class="nav-button" type="button" data-section="simulator">Simulator</button>
+          <button class="nav-button" type="button" data-section="compare">Compare</button>
           <button class="nav-button" type="button" data-section="model">Model</button>
           <button class="nav-button" type="button" data-section="insights">Insights</button>
         </nav>
@@ -41,6 +42,7 @@
             <button id="themeToggle" class="theme-button" type="button" aria-label="Toggle theme" title="Toggle light or dark theme">
               <span id="themeIcon">Dark</span>
             </button>
+            <button id="presentationToggle" class="secondary-button" type="button">Presentation Mode</button>
             <button id="resetButton" class="secondary-button" type="button">Reset</button>
           </div>
         </header>
@@ -102,10 +104,16 @@
                 <p class="section-description">Save simple day-by-day entries in localStorage and compare them with the simulation inputs.</p>
               </div>
               <div class="section-actions">
+                <button id="loadSampleWeekButton" class="secondary-button" type="button">Load Sample Week</button>
+                <button id="loadSampleMonthButton" class="secondary-button" type="button">Load Sample Month</button>
                 <button id="useLogsButton" class="primary-button" type="button">Use Logs in Model</button>
+                <button id="exportLogsButton" class="secondary-button" type="button">Export Logs</button>
+                <button id="importLogsButton" class="secondary-button" type="button">Import Logs</button>
+                <input id="importLogsInput" class="visually-hidden" type="file" accept="application/json,.json" />
                 <button id="clearLogsButton" class="danger-button" type="button">Clear All Logs</button>
               </div>
             </div>
+            <p id="logImportMessage" class="mode-message" hidden></p>
 
             <div class="log-layout">
               <form id="dailyLogForm" class="panel log-form">
@@ -146,6 +154,24 @@
               </form>
 
               <div class="panel log-table-panel">
+                <div class="log-chart-card">
+                  <div class="panel-heading chart-heading compact-heading">
+                    <div>
+                      <h3>Logged Inputs Over Time</h3>
+                      <p>Actual academic, training, work, sleep, and support values from saved days.</p>
+                    </div>
+                    <div class="legend" aria-label="Daily log chart legend">
+                      <span><i class="swatch academic"></i>Academic</span>
+                      <span><i class="swatch training"></i>Training</span>
+                      <span><i class="swatch work"></i>Work</span>
+                      <span><i class="swatch sleep"></i>Sleep</span>
+                      <span><i class="swatch support"></i>Support</span>
+                    </div>
+                  </div>
+                  <div class="log-chart-frame">
+                    <canvas id="logInputChart" width="840" height="260"></canvas>
+                  </div>
+                </div>
                 <div class="table-wrap">
                   <table>
                     <thead>
@@ -244,6 +270,32 @@
             </div>
           </section>
 
+          <section id="compare" class="app-section" aria-labelledby="compareHeading">
+            <div class="section-header">
+              <div>
+                <p class="eyebrow">Mode comparison</p>
+                <h2 id="compareHeading">Compare</h2>
+                <p class="section-description">Compare the current scenario against the saved personal log model, then test quick what-if changes.</p>
+              </div>
+            </div>
+
+            <p id="compareEmptyMessage" class="mode-message" hidden>Add daily logs or load sample data to compare personal logs against the current scenario.</p>
+            <div id="comparisonPanel" class="compare-grid"></div>
+
+            <article class="panel detail-card">
+              <h3>Difference in Final Burnout Risk</h3>
+              <p id="comparisonNarrative">Add daily logs or load sample data to compare modes.</p>
+            </article>
+
+            <article class="panel detail-card">
+              <div class="panel-heading">
+                <h3>What-if Experiments</h3>
+                <p>These apply virtual changes to saved logs only. Your Daily Log entries are not modified.</p>
+              </div>
+              <div id="whatIfResults" class="what-if-grid"></div>
+            </article>
+          </section>
+
           <section id="model" class="app-section" aria-labelledby="modelHeading">
             <div class="section-header">
               <div>
@@ -295,6 +347,59 @@
               </div>
             </article>
 
+            <div class="walkthrough-grid">
+              <article class="panel walkthrough-card">
+                <h3>Stress Equation Walkthrough</h3>
+                <p class="formula">dS/dt = aA + bT + cW - dR - eP</p>
+                <div class="term-columns">
+                  <div>
+                    <h4>Increases stress</h4>
+                    <p>+ aA = academic workload effect</p>
+                    <p>+ bT = training intensity effect</p>
+                    <p>+ cW = work responsibility effect</p>
+                  </div>
+                  <div>
+                    <h4>Decreases stress</h4>
+                    <p>- dR = recovery buffer</p>
+                    <p>- eP = social support buffer</p>
+                  </div>
+                </div>
+              </article>
+              <article class="panel walkthrough-card">
+                <h3>Energy Equation Walkthrough</h3>
+                <p class="formula">dE/dt = fR + gL - hS - iT - jW</p>
+                <div class="term-columns">
+                  <div>
+                    <h4>Increases energy</h4>
+                    <p>+ fR = recovery effect</p>
+                    <p>+ gL = sleep effect</p>
+                  </div>
+                  <div>
+                    <h4>Decreases energy</h4>
+                    <p>- hS = stress drain</p>
+                    <p>- iT = training drain</p>
+                    <p>- jW = work drain</p>
+                  </div>
+                </div>
+              </article>
+              <article class="panel walkthrough-card">
+                <h3>Recovery Equation Walkthrough</h3>
+                <p class="formula">dR/dt = kL + mP - nS - qT</p>
+                <div class="term-columns">
+                  <div>
+                    <h4>Increases recovery</h4>
+                    <p>+ kL = sleep recovery effect</p>
+                    <p>+ mP = support recovery effect</p>
+                  </div>
+                  <div>
+                    <h4>Decreases recovery</h4>
+                    <p>- nS = stress recovery cost</p>
+                    <p>- qT = training recovery cost</p>
+                  </div>
+                </div>
+              </article>
+            </div>
+
             <div class="two-column">
               <article class="panel detail-card">
                 <h3>Euler's Method</h3>
@@ -333,6 +438,22 @@
         </main>
       </div>
     </div>
+
+    <section id="presentationView" class="presentation-view" hidden aria-label="Presentation mode">
+      <header class="presentation-toolbar">
+        <div>
+          <p class="eyebrow">Differential Equations Final Project</p>
+          <strong id="presentationCounter">Slide 1 of 9</strong>
+        </div>
+        <button id="exitPresentationButton" class="presentation-exit-button" type="button">Exit Presentation Mode</button>
+      </header>
+      <main id="presentationSlide" class="presentation-slide"></main>
+      <footer class="presentation-footer">
+        <button id="previousPresentationButton" class="presentation-nav-button" type="button">Previous</button>
+        <p id="presentationNotes" class="presentation-notes"></p>
+        <button id="nextPresentationButton" class="presentation-nav-button primary" type="button">Next</button>
+      </footer>
+    </section>
 
     <script type="module" src="/src/main.js"></script>
   </body>

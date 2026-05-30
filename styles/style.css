@@ -257,6 +257,11 @@ input[type="date"] {
   font-weight: 800;
 }
 
+.secondary-button.active {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+  background: color-mix(in srgb, var(--accent) 18%, var(--button));
+}
+
 .danger-button {
   border-color: color-mix(in srgb, var(--danger) 45%, var(--border));
   color: var(--danger);
@@ -331,6 +336,20 @@ input[type="date"] {
   border-radius: 8px;
   background: color-mix(in srgb, var(--accent) 10%, var(--panel));
   color: var(--muted-text);
+}
+
+.mode-message.error-message {
+  border-color: color-mix(in srgb, var(--danger) 45%, var(--border));
+  color: var(--danger);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 .section-description,
@@ -448,6 +467,21 @@ input[type="date"] {
   min-width: 0;
   padding: 0;
   overflow: hidden;
+}
+
+.log-chart-card {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.compact-heading {
+  align-items: flex-start;
+  padding: 18px 18px 0;
+}
+
+.log-chart-frame {
+  height: 260px;
+  padding: 8px 10px 14px;
 }
 
 .table-wrap {
@@ -598,6 +632,11 @@ input[type="range"] {
 .energy { background: #2f80ed; }
 .recovery { background: #2fa66a; }
 .risk { background: #8b5cf6; }
+.academic { background: #f59e0b; }
+.training { background: #e65f5c; }
+.work { background: #8b5cf6; }
+.sleep { background: #2f80ed; }
+.support { background: #2fa66a; }
 
 .chart-frame {
   height: 520px;
@@ -709,6 +748,438 @@ canvas {
   font-size: 0.9rem;
 }
 
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.compare-card {
+  padding: 18px;
+}
+
+.comparison-metrics {
+  display: grid;
+  gap: 10px;
+}
+
+.comparison-metrics p {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.comparison-metrics p:last-child {
+  border-bottom: 0;
+}
+
+.comparison-metrics span,
+.what-if-card span {
+  color: var(--muted-text);
+}
+
+.what-if-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.what-if-card {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-strong);
+}
+
+.what-if-card p {
+  color: var(--muted-text);
+  line-height: 1.45;
+}
+
+.what-if-card small,
+.presentation-what-if-card small {
+  display: block;
+  margin-top: 10px;
+  color: var(--accent-strong);
+  line-height: 1.4;
+}
+
+.what-if-metrics,
+.presentation-what-if-card dl {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.what-if-metrics div,
+.presentation-what-if-card dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.what-if-metrics dt,
+.presentation-what-if-card dt {
+  color: var(--muted-text);
+  font-size: 0.84rem;
+}
+
+.what-if-metrics dd,
+.presentation-what-if-card dd {
+  margin: 0;
+  font-weight: 800;
+}
+
+.inline-empty {
+  grid-column: 1 / -1;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.walkthrough-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.walkthrough-card {
+  padding: 18px;
+}
+
+.term-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.term-columns > div {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-strong);
+}
+
+.term-columns h4 {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+}
+
+.term-columns p {
+  margin: 0 0 8px;
+  color: var(--muted-text);
+}
+
+.presentation-view {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-width: 960px;
+  min-height: 100vh;
+  padding: 24px 34px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.presentation-view[hidden] {
+  display: none;
+}
+
+.presentation-toolbar,
+.presentation-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.presentation-toolbar {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.presentation-toolbar strong {
+  color: var(--muted-text);
+}
+
+.presentation-footer {
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.presentation-exit-button,
+.presentation-nav-button {
+  min-height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0 16px;
+  background: var(--button);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.presentation-nav-button.primary {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+  background: var(--accent);
+  color: #07130d;
+}
+
+.presentation-nav-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.presentation-notes {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted-text);
+  font-size: 0.96rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.presentation-slide {
+  min-height: 0;
+  overflow: auto;
+  padding: 26px 0;
+}
+
+.presentation-slide-heading {
+  margin-bottom: 20px;
+}
+
+.presentation-kicker {
+  margin: 0 0 8px;
+  color: var(--accent-strong);
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.presentation-slide h2 {
+  margin: 0;
+  font-size: 2.45rem;
+}
+
+.presentation-hero {
+  display: grid;
+  align-content: center;
+  min-height: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+}
+
+.presentation-hero h1 {
+  max-width: 980px;
+  margin-bottom: 22px;
+  font-size: 4.4rem;
+  line-height: 1.02;
+}
+
+.presentation-lead {
+  max-width: 980px;
+  color: var(--muted-text);
+  font-size: 1.42rem;
+  line-height: 1.6;
+}
+
+.presentation-meta,
+.presentation-input-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.presentation-meta {
+  margin-top: 20px;
+}
+
+.presentation-meta span,
+.presentation-input-grid span {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.presentation-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  background: var(--panel);
+}
+
+.presentation-card p,
+.presentation-card li,
+.presentation-caption {
+  color: var(--muted-text);
+  font-size: 1.08rem;
+  line-height: 1.55;
+}
+
+.presentation-status-layout,
+.presentation-graph-layout {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 16px;
+}
+
+.status-card {
+  display: grid;
+  align-content: center;
+  gap: 14px;
+}
+
+.presentation-category-badge {
+  display: inline-flex;
+  justify-content: center;
+  max-width: 220px;
+  border-radius: 999px;
+  padding: 14px 18px;
+  font-size: 1.45rem;
+  font-weight: 900;
+}
+
+.presentation-category-badge.low { background: rgba(47, 166, 106, 0.22); color: #3bd083; }
+.presentation-category-badge.moderate { background: rgba(233, 168, 52, 0.24); color: #e9a834; }
+.presentation-category-badge.high { background: rgba(230, 95, 92, 0.22); color: #ff7470; }
+
+.presentation-recommendation {
+  color: var(--accent-strong);
+  font-size: 1.18rem;
+}
+
+.presentation-metric-grid,
+.presentation-three-grid,
+.presentation-two-grid,
+.presentation-what-if-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.presentation-metric-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.presentation-three-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.presentation-two-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.presentation-what-if-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-top: 14px;
+}
+
+.presentation-what-if-card {
+  padding: 14px;
+}
+
+.presentation-what-if-card h3 {
+  margin-bottom: 6px;
+}
+
+.presentation-what-if-card p {
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.presentation-metric span,
+.insight-slide-card span {
+  display: block;
+  color: var(--muted-text);
+  font-size: 1rem;
+}
+
+.insight-slide-card small {
+  display: block;
+  margin-top: 8px;
+  color: var(--accent-strong);
+  font-size: 0.92rem;
+}
+
+.presentation-metric strong,
+.insight-slide-card strong {
+  display: block;
+  margin-top: 12px;
+  font-size: 2.15rem;
+}
+
+.variable-card > strong,
+.takeaway-card > strong {
+  display: block;
+  color: var(--accent-strong);
+  font-size: 2.3rem;
+}
+
+.variable-card h3,
+.takeaway-card h3 {
+  margin-top: 8px;
+  font-size: 1.25rem;
+}
+
+.presentation-inputs,
+.limitation-slide-card {
+  margin-top: 14px;
+}
+
+.presentation-equation-stack,
+.presentation-insight-list {
+  display: grid;
+  gap: 12px;
+}
+
+.presentation-equation {
+  color: var(--text) !important;
+  font-size: 1.36rem !important;
+  font-weight: 900;
+}
+
+.presentation-equation.large {
+  font-size: 2rem !important;
+}
+
+.euler-card {
+  max-width: 960px;
+  margin: 40px auto 0;
+  text-align: center;
+}
+
+.dt-callout,
+.presentation-callout,
+.presentation-empty {
+  margin: 16px 0;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  border-radius: 8px;
+  padding: 14px;
+  background: color-mix(in srgb, var(--accent) 12%, var(--panel));
+  color: var(--accent-strong);
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.presentation-chart-frame {
+  height: 470px;
+}
+
+.presentation-chart-frame canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.presentation-caption {
+  margin: 14px 0 0;
+}
+
 @media (max-width: 1280px) {
   body {
     min-width: 960px;
@@ -719,7 +1190,9 @@ canvas {
   }
 
   .dashboard-grid,
-  .insight-grid {
+  .insight-grid,
+  .compare-grid,
+  .what-if-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 

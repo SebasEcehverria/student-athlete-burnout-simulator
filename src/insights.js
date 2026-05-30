@@ -1,25 +1,31 @@
 import { getBurnoutCategory } from "./model.js";
 
 export function calculateInsights(points) {
+  const firstPoint = points[0];
   const finalPoint = points[points.length - 1];
-  const highestStress = maxBy(points, "stress");
-  const lowestEnergy = minBy(points, "energy");
-  const lowestRecovery = minBy(points, "recovery");
+  const modeledPoints = points.length > 1 ? points.slice(1) : points;
+  const highestStress = maxBy(modeledPoints, "stress");
   const averages = {
     stress: average(points, "stress"),
     energy: average(points, "energy"),
     recovery: average(points, "recovery")
   };
-  const riskTrend = finalPoint.risk - points[0].risk;
+  const changes = {
+    stress: finalPoint.stress - firstPoint.stress,
+    energy: finalPoint.energy - firstPoint.energy,
+    recovery: finalPoint.recovery - firstPoint.recovery,
+    risk: finalPoint.risk - firstPoint.risk
+  };
 
   return {
+    firstPoint,
+    finalPoint,
     highestStress,
-    lowestEnergy,
-    lowestRecovery,
     finalCategory: getBurnoutCategory(finalPoint.risk),
     averages,
-    riskTrend,
-    interpretation: buildInsightInterpretation(points, averages, riskTrend)
+    changes,
+    riskTrend: changes.risk,
+    interpretation: buildInsightInterpretation(changes)
   };
 }
 
@@ -38,14 +44,14 @@ export function renderInsights(points) {
       detail: insights.highestStress.stress.toFixed(1)
     },
     {
-      label: "Lowest Energy Day",
-      value: formatPointLabel(insights.lowestEnergy),
-      detail: insights.lowestEnergy.energy.toFixed(1)
+      label: "Energy Change",
+      value: formatTransition(insights.firstPoint.energy, insights.finalPoint.energy),
+      detail: `${formatTrend(insights.changes.energy)} over the model`
     },
     {
-      label: "Lowest Recovery Day",
-      value: formatPointLabel(insights.lowestRecovery),
-      detail: insights.lowestRecovery.recovery.toFixed(1)
+      label: "Recovery Change",
+      value: formatTransition(insights.firstPoint.recovery, insights.finalPoint.recovery),
+      detail: `${formatTrend(insights.changes.recovery)} over the model`
     },
     {
       label: "Final Burnout Category",
@@ -69,8 +75,8 @@ export function renderInsights(points) {
     },
     {
       label: "Burnout Risk Trend",
-      value: formatTrend(insights.riskTrend),
-      detail: insights.riskTrend >= 0 ? "Risk increased" : "Risk decreased"
+      value: formatTransition(insights.firstPoint.risk, insights.finalPoint.risk),
+      detail: `${formatTrend(insights.changes.risk)} over the model`
     }
   ];
 
@@ -89,34 +95,12 @@ export function renderInsights(points) {
   document.querySelector("#insightInterpretation").textContent = insights.interpretation;
 }
 
-function buildInsightInterpretation(points, averages, riskTrend) {
-  const first = points[0];
-  const final = points[points.length - 1];
-  const stressRises = final.stress > first.stress;
-  const energyFalls = final.energy < first.energy;
-  const recoveryFalls = final.recovery < first.recovery;
-
-  if (stressRises && energyFalls && recoveryFalls) {
-    return "If stress rises while energy and recovery fall, the model suggests the schedule may become harder to sustain over time.";
-  }
-
-  if (riskTrend > 15) {
-    return "Burnout risk climbs noticeably in this run, so the model points toward reducing load or adding more recovery support.";
-  }
-
-  if (averages.energy > averages.stress && averages.recovery > averages.stress) {
-    return "Energy and recovery stay above stress on average, so this scenario looks more balanced in the model.";
-  }
-
-  return "The simulation shows a mixed pattern. Small changes to sleep, support, workload, or training could shift the final risk category.";
+function buildInsightInterpretation(changes) {
+  return `Over the model, stress ${describeDirection(changes.stress)}, energy ${describeDirection(changes.energy)}, and recovery ${describeDirection(changes.recovery)}. Burnout risk ${describeDirection(changes.risk)}, which shows how the balance between pressure and protective factors changed over time.`;
 }
 
 function maxBy(points, key) {
   return points.reduce((best, point) => (point[key] > best[key] ? point : best), points[0]);
-}
-
-function minBy(points, key) {
-  return points.reduce((best, point) => (point[key] < best[key] ? point : best), points[0]);
 }
 
 function average(points, key) {
@@ -130,4 +114,14 @@ function formatTrend(value) {
 
 function formatPointLabel(point) {
   return point.date ? `Day ${point.day} / ${point.date}` : `Day ${point.day}`;
+}
+
+function formatTransition(start, end) {
+  return `${start.toFixed(1)} \u2192 ${end.toFixed(1)}`;
+}
+
+function describeDirection(value) {
+  if (value > 0.05) return `increased by ${value.toFixed(1)}`;
+  if (value < -0.05) return `decreased by ${Math.abs(value).toFixed(1)}`;
+  return "stayed nearly unchanged";
 }

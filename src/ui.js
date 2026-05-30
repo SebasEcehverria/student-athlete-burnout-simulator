@@ -1,9 +1,15 @@
 import { drawChart } from "./chart.js";
+import { calculateModeComparison, renderComparison } from "./compare.js";
 import { runEulerFromLogs, runEulerSimulation } from "./euler.js";
-import { getLogEntries, initializeLogbook } from "./logbook.js";
+import { drawLogInputChart } from "./logChart.js";
+import { exportLogs, importLogsFromFile } from "./logImportExport.js";
+import { getLogEntries, initializeLogbook, saveLogEntries } from "./logbook.js";
 import { getBurnoutCategory, getInterpretation } from "./model.js";
 import { defaultState, presets, sliderDefinitions } from "./presets.js";
-import { renderInsights } from "./insights.js";
+import { calculateInsights, renderInsights } from "./insights.js";
+import { enterPresentationMode, initializePresentationMode } from "./presentation.js";
+import { createSampleMonth, createSampleWeek } from "./sampleData.js";
+import { calculateWhatIfResults, renderWhatIfResults } from "./whatIf.js";
 
 let state = { ...defaultState };
 let activePreset = "balanced";
@@ -15,6 +21,7 @@ const sectionTitles = {
   dashboard: "Dashboard",
   "daily-log": "Daily Log",
   simulator: "Simulator",
+  compare: "Compare",
   model: "Model",
   insights: "Insights"
 };
@@ -34,12 +41,56 @@ export function initializeUI() {
   bindProfileInput();
   bindPresetButtons();
   bindThemeToggle();
+  bindPresentationToggle();
   bindResetButton();
   bindUseLogsButton();
+  bindSampleButtons();
+  bindLogImportExport();
   initializeLogbook({ onEntriesChange: () => render() });
+  initializePresentationMode(getPresentationData);
   applyState({ ...defaultState, ...presets.balanced.values }, "balanced");
 
   window.addEventListener("resize", () => render());
+}
+
+function bindSampleButtons() {
+  document.querySelector("#loadSampleWeekButton").addEventListener("click", () => {
+    saveLogEntries(createSampleWeek());
+    showLogMessage("Sample week loaded.");
+  });
+
+  document.querySelector("#loadSampleMonthButton").addEventListener("click", () => {
+    saveLogEntries(createSampleMonth());
+    showLogMessage("Sample month loaded.");
+  });
+}
+
+function bindLogImportExport() {
+  const input = document.querySelector("#importLogsInput");
+
+  document.querySelector("#exportLogsButton").addEventListener("click", () => {
+    exportLogs(getLogEntries());
+    showLogMessage("Logs exported as burnout-logbook.json.");
+  });
+
+  document.querySelector("#importLogsButton").addEventListener("click", () => {
+    input.click();
+  });
+
+  input.addEventListener("change", async () => {
+    const file = input.files[0];
+    if (!file) return;
+
+    try {
+      const importedLogs = await importLogsFromFile(file);
+      saveLogEntries(importedLogs);
+      showLogMessage(`${importedLogs.length} log entries imported.`);
+    } catch (error) {
+      showLogMessage(error.message, true);
+    } finally {
+      input.value = "";
+    }
+  });
 }
 
 function buildSliders() {
@@ -129,6 +180,10 @@ function bindThemeToggle() {
   });
 }
 
+function bindPresentationToggle() {
+  document.querySelector("#presentationToggle").addEventListener("click", enterPresentationMode);
+}
+
 function bindResetButton() {
   document.querySelector("#resetButton").addEventListener("click", () => {
     document.querySelector("#profileName").value = defaultState.profileName;
@@ -198,6 +253,9 @@ function render() {
   renderSimulatorSummary(finalPoint, category, logEntries.length);
   renderDashboard(finalPoint, category, logEntries.length);
   renderInsights(currentPoints);
+  drawLogInputChart(document.querySelector("#logInputChart"), logEntries);
+  renderComparison(state, logEntries);
+  renderWhatIfResults(state, logEntries);
 }
 
 function renderSimulatorSummary(finalPoint, category, logCount) {
@@ -269,4 +327,33 @@ function getDashboardMeaning(category, profileName) {
   }
 
   return `${profileName}'s final energy and recovery offset stress enough for a low-risk result in this model.`;
+}
+
+function getPresentationData() {
+  const logEntries = getLogEntries();
+  const points = modelMode === "personal" ? runEulerFromLogs(state, logEntries) : runEulerSimulation(state);
+  const finalPoint = points[points.length - 1];
+  const burnoutCategory = getBurnoutCategory(finalPoint.risk);
+
+  return {
+    profileName: state.profileName,
+    modeLabel: modelMode === "personal" ? "Personal Log Mode" : "Scenario Mode",
+    scenarioName: getActiveScenarioName(),
+    logCount: logEntries.length,
+    currentPoints: points,
+    finalPoint,
+    burnoutCategory,
+    recommendation: recommendations[burnoutCategory],
+    statusMeaning: getDashboardMeaning(burnoutCategory, state.profileName),
+    insights: calculateInsights(points),
+    comparison: calculateModeComparison(state, logEntries),
+    whatIfResults: calculateWhatIfResults(state, logEntries)
+  };
+}
+
+function showLogMessage(message, isError = false) {
+  const element = document.querySelector("#logImportMessage");
+  element.textContent = message;
+  element.hidden = false;
+  element.classList.toggle("error-message", isError);
 }
